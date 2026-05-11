@@ -1,0 +1,25 @@
+{
+	"name": "breezes",
+	"author": {
+		"name": "Brendan Lucas"
+	},
+	"description": "Makes WebSockets a breeze.",
+	"version": "0.0.0",
+	"type": "module",
+	"imports": {
+		"#~/*": "./dist/src/*.js",
+		"#tests/*": "./dist/tests/*.js",
+		"#assets/*": "./assets/*"
+	},
+	"dependencies": {
+		"eventemitter3": "latest",
+		"zod": "latest"
+	},
+	"devDependencies": {
+		"@types/node": "^25.6.2",
+		"@types/ws": "latest",
+		"type-fest": "latest",
+		"webpack-cli": "latest",
+		"ws": "latest"
+	}
+}

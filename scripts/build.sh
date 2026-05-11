@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail;
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)";
+cd "$ROOT_DIR";
+
+echo "Cleaning previous build...";
+rm -rf dist;
+mkdir -p dist;
+
+echo "Generating identifier...";
+VERSION=$(cat package.json | jq '.["version"]');
+. ./scripts/standard.env;
+
+echo "{\"version\": $VERSION, \"greeting\": \"$GREETING\"}" > ./assets/identifier.json;
+
+echo "Transpiling...";
+tsc;
+
+echo "Bundling...";
+npx webpack;
