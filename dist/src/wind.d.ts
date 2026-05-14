@@ -1,12 +1,6 @@
 import { Device } from '#~/device';
 export declare class Wind extends Device {
     protected static __WebSocket__: typeof WebSocket;
-    /**
-     * Connects to a {@link Blower} instance.
-     *
-     * @param location The location of the *WebSocket*.
-     *
-     */
     static connect(config: Wind.Config): Promise<Wind>;
 }
 export declare namespace Wind {
@@ -19,13 +13,14 @@ export declare namespace Wind {
          * The maximum time (in milliseconds) given for the server to respond to the inital connection.
          */
         timeout?: number;
-        /**
-         * Should the packets be type validated (using *Zod*)?
-         * This option is not great when many packets are received quickly.
-         */
-        validateStructure?: boolean;
     };
     class Creator {
+        /**
+         * Connects to a {@link Blower} instance.
+         *
+         * @param location The location of the *WebSocket*.
+         *
+         */
         static connect(): Promise<Wind>;
     }
 }

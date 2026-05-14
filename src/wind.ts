@@ -1,6 +1,7 @@
 import Identifier from '#assets/identifier.json' with { type: 'json', };
 
 import { Device, } from '#~/device';
+import * as Reader from '#~/reader';
 
 export class Wind extends Device {
 	protected static __WebSocket__: typeof WebSocket;
@@ -10,13 +11,6 @@ export class Wind extends Device {
 		this.__WebSocket__ = globalThis.WebSocket;
 	};
 
-	// Is there a `Self` type in *Typescript*?
-	/**
-	 * Connects to a {@link Blower} instance.
-	 * 
-	 * @param location The location of the *WebSocket*.
-	 * 
-	 */
 	public static async connect(config: Wind.Config): Promise<Wind> {
 		const socket = new this.__WebSocket__(config.location);
 
@@ -28,37 +22,35 @@ export class Wind extends Device {
 					function listener(event: MessageEvent<string>) {
 						socket.removeEventListener('message', listener);
 
-						console.log(event.data);
-
-						resolve(event.data);
+						resolve(Reader.parse(event.data) as string);
 					};
 
 					socket.addEventListener('message', listener);
 
-					if (config.timeout !== undefined) {
+					/*if (config.timeout !== undefined) {
 						setTimeout(reject, config.timeout);
-					};
+					};*/
 				}));
 
 				if (response !== Identifier.greeting) {
 					reject("The server did not return the correct identifier.");
 				};
-
-				socket.send(`"${Identifier.greeting}"`);
 					
-				/*response = await (new Promise<string>((resolve, reject) => {
-					function listener(event: MessageEvent<string>) {
-						socket.removeEventListener('message', listener);
-
-						resolve(event.data);
-					};
-
-					socket.addEventListener('message', listener);
-
-					if (config.timeout !== undefined) {
-						setTimeout(reject, config.timeout);
-					};
-				}));*/
+				/*if (config.doNotInquirePeerInfo !== true) {
+					response = await (new Promise<string>((resolve, reject) => {
+						function listener(event: MessageEvent<string>) {
+							socket.removeEventListener('message', listener);
+	
+							resolve(event.data);
+						};
+	
+						socket.addEventListener('message', listener);
+	
+						if (config.timeout !== undefined) {
+							setTimeout(reject, config.timeout);
+						};
+					}));
+				};*/
 
 				// The *WebSocket* is ready.
 
@@ -87,15 +79,23 @@ export namespace Wind {
 		 */
 		timeout?: number,
 
+		// TODO: Remove this message when convenient.
 		/**
 		 * Should the packets be type validated (using *Zod*)?
 		 * This option is not great when many packets are received quickly.
 		 */
-		validateStructure?: boolean,
+		//validateStructure?: boolean,
 	};
 
 	export class Creator {
+		/**
+		 * Connects to a {@link Blower} instance.
+		 * 
+		 * @param location The location of the *WebSocket*.
+		 * 
+		 */
 		public static async connect(): Promise<Wind> {
+			// Type declaration only.
 			return null as any;
 		};
 	};

@@ -1,6 +1,8 @@
 import EventEmitter from 'eventemitter3';
 import * as Reader from '#~/reader';
 import * as Codes from '#~/codes';
+// TODO: Add documentation.
+// TODO: Ping/Pong.
 export class Device extends EventEmitter {
     socket;
     queue = [];
@@ -12,7 +14,7 @@ export class Device extends EventEmitter {
             const data = Reader.parse(event.data);
             if (data === null) {
                 // TODO: Make this configurable.
-                socket.close(Codes.Disconnect.InvalidPayloadData);
+                socket.close(Codes.Close.InvalidPayloadData);
                 return;
             }
             ;
@@ -20,7 +22,7 @@ export class Device extends EventEmitter {
             this.emit('packet', data);
         });
         socket.addEventListener('close', (event) => {
-            this.emit('disconnect', event.code, event.reason);
+            this.emit('close', event.code, event.reason);
         });
     }
     ;
@@ -33,22 +35,30 @@ export class Device extends EventEmitter {
         this.socket.send(string);
     }
     ;
+    /**
+     * End the connection.
+     *
+     * @param code The closing code to send.
+     */
+    close(code = Codes.Close.NormalClosure, reason) {
+        this.socket.close(code, reason);
+    }
+    ;
     async *receiver() {
         const queue = [];
         let next = {
             resolve: null,
             reject: null,
         };
-        let disconnectInfo = null;
+        let closeInfo = null;
         this.on('packet', (packet) => {
             queue.push(packet);
             next.resolve?.();
             next.resolve = null;
         });
-        this.once('disconnect', (code, reason) => {
-            console.log(`Disconnected from server!`);
-            next.resolve?.(); // Wake up the loop to handle the disconnect.
-            disconnectInfo = {
+        this.once('close', (code, reason) => {
+            next.resolve?.(); // Wake up the loop to handle the closure.
+            closeInfo = {
                 code: code,
                 reason: reason,
             };
@@ -61,7 +71,7 @@ export class Device extends EventEmitter {
             ;
             // Ensure that we don't `await` the promise, which will be unsettled.
             if (this.socket.readyState === Codes.ConnectionState.Closed) {
-                return disconnectInfo;
+                return closeInfo;
                 // Subsequent calls of `next` should give errors.
             }
             ;

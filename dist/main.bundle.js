@@ -348,6 +348,111 @@ if (true) {
 
 /***/ },
 
+/***/ "./node_modules/ws/browser.js"
+/*!************************************!*\
+  !*** ./node_modules/ws/browser.js ***!
+  \************************************/
+(module) {
+
+
+
+module.exports = function () {
+  throw new Error(
+    'ws does not work in the browser. Browser clients must use the native ' +
+      'WebSocket object'
+  );
+};
+
+
+/***/ },
+
+/***/ "./dist/src/blower.js"
+/*!****************************!*\
+  !*** ./dist/src/blower.js ***!
+  \****************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Blower: () => (/* binding */ Blower),
+/* harmony export */   blower: () => (/* binding */ blower)
+/* harmony export */ });
+/* harmony import */ var _assets_identifier_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! #assets/identifier.json */ "./assets/identifier.json");
+/* harmony import */ var _wind__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! #~/wind */ "./dist/src/wind.js");
+/* harmony import */ var ws__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ws */ "./node_modules/ws/browser.js");
+/* harmony import */ var eventemitter3__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! eventemitter3 */ "./node_modules/eventemitter3/index.mjs");
+
+
+
+
+class Blower extends eventemitter3__WEBPACK_IMPORTED_MODULE_3__.EventEmitter {
+    server;
+    path;
+    static __WebSocketServer__;
+    // By default, use the *WebSocketServer* base.
+    static {
+        this.__WebSocketServer__ = ws__WEBPACK_IMPORTED_MODULE_2__.WebSocketServer;
+    }
+    ;
+    static async create(config) {
+        const server = new ws__WEBPACK_IMPORTED_MODULE_2__.WebSocketServer({
+            perMessageDeflate: true,
+            noServer: true,
+        });
+        return new Blower(server, config.path);
+    }
+    ;
+    initialize(socket) {
+        socket.once('message', (data) => {
+            // TODO...
+            socket.send(`"${_assets_identifier_json__WEBPACK_IMPORTED_MODULE_0__.greeting}"`);
+            // TODO...
+            this.emit('connection', new _wind__WEBPACK_IMPORTED_MODULE_1__.Wind(socket /* TODO: Check the implications of this. */));
+        });
+    }
+    constructor(server, path) {
+        super();
+        this.server = server;
+        this.path = path;
+        this.server.on('connection', (socket) => {
+            this.initialize(socket);
+        });
+    }
+    ;
+    handle(request, socket, head) {
+        this.server.handleUpgrade(request, socket, head, (socket, request) => {
+            this.initialize(socket);
+        });
+    }
+    ;
+}
+;
+(function (Blower) {
+    ;
+    class Creator {
+        // TODO: Document.
+        static async create() {
+            // Type declaration only.
+            return null;
+        }
+        ;
+    }
+    Blower.Creator = Creator;
+    ;
+})(Blower || (Blower = {}));
+;
+function blower(config) {
+    return (target) => {
+        target.create = async () => {
+            return await Blower.create(config);
+        };
+    };
+}
+;
+
+
+/***/ },
+
 /***/ "./dist/src/codes.js"
 /*!***************************!*\
   !*** ./dist/src/codes.js ***!
@@ -356,27 +461,27 @@ if (true) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ConnectionState: () => (/* binding */ ConnectionState),
-/* harmony export */   Disconnect: () => (/* binding */ Disconnect)
+/* harmony export */   Close: () => (/* binding */ Close),
+/* harmony export */   ConnectionState: () => (/* binding */ ConnectionState)
 /* harmony export */ });
-var Disconnect;
-(function (Disconnect) {
-    Disconnect[Disconnect["NormalClosure"] = 1000] = "NormalClosure";
-    Disconnect[Disconnect["GoingAway"] = 1001] = "GoingAway";
-    Disconnect[Disconnect["ProtocolError"] = 1002] = "ProtocolError";
-    Disconnect[Disconnect["UnsupportedData"] = 1003] = "UnsupportedData";
-    Disconnect[Disconnect["NoStatusReceived"] = 1005] = "NoStatusReceived";
-    Disconnect[Disconnect["AbnormalClosure"] = 1006] = "AbnormalClosure";
-    Disconnect[Disconnect["InvalidPayloadData"] = 1007] = "InvalidPayloadData";
-    Disconnect[Disconnect["PolicyViolation"] = 1008] = "PolicyViolation";
-    Disconnect[Disconnect["MessageTooBig"] = 1009] = "MessageTooBig";
-    Disconnect[Disconnect["MandatoryExtension"] = 1010] = "MandatoryExtension";
-    Disconnect[Disconnect["ServerError"] = 1011] = "ServerError";
-    Disconnect[Disconnect["ServiceRestart"] = 1012] = "ServiceRestart";
-    Disconnect[Disconnect["TryAgainLater"] = 1013] = "TryAgainLater";
-    Disconnect[Disconnect["BadGateway"] = 1014] = "BadGateway";
-    Disconnect[Disconnect["TLSHandshake"] = 1015] = "TLSHandshake";
-})(Disconnect || (Disconnect = {}));
+var Close;
+(function (Close) {
+    Close[Close["NormalClosure"] = 1000] = "NormalClosure";
+    Close[Close["GoingAway"] = 1001] = "GoingAway";
+    Close[Close["ProtocolError"] = 1002] = "ProtocolError";
+    Close[Close["UnsupportedData"] = 1003] = "UnsupportedData";
+    Close[Close["NoStatusReceived"] = 1005] = "NoStatusReceived";
+    Close[Close["AbnormalClosure"] = 1006] = "AbnormalClosure";
+    Close[Close["InvalidPayloadData"] = 1007] = "InvalidPayloadData";
+    Close[Close["PolicyViolation"] = 1008] = "PolicyViolation";
+    Close[Close["MessageTooBig"] = 1009] = "MessageTooBig";
+    Close[Close["MandatoryExtension"] = 1010] = "MandatoryExtension";
+    Close[Close["ServerError"] = 1011] = "ServerError";
+    Close[Close["ServiceRestart"] = 1012] = "ServiceRestart";
+    Close[Close["TryAgainLater"] = 1013] = "TryAgainLater";
+    Close[Close["BadGateway"] = 1014] = "BadGateway";
+    Close[Close["TLSHandshake"] = 1015] = "TLSHandshake";
+})(Close || (Close = {}));
 ;
 var ConnectionState;
 (function (ConnectionState) {
@@ -406,6 +511,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+// TODO: Add documentation.
+// TODO: Ping/Pong.
 class Device extends eventemitter3__WEBPACK_IMPORTED_MODULE_0__["default"] {
     socket;
     queue = [];
@@ -417,7 +524,7 @@ class Device extends eventemitter3__WEBPACK_IMPORTED_MODULE_0__["default"] {
             const data = _reader__WEBPACK_IMPORTED_MODULE_1__.parse(event.data);
             if (data === null) {
                 // TODO: Make this configurable.
-                socket.close(_codes__WEBPACK_IMPORTED_MODULE_2__.Disconnect.InvalidPayloadData);
+                socket.close(_codes__WEBPACK_IMPORTED_MODULE_2__.Close.InvalidPayloadData);
                 return;
             }
             ;
@@ -425,7 +532,7 @@ class Device extends eventemitter3__WEBPACK_IMPORTED_MODULE_0__["default"] {
             this.emit('packet', data);
         });
         socket.addEventListener('close', (event) => {
-            this.emit('disconnect', event.code, event.reason);
+            this.emit('close', event.code, event.reason);
         });
     }
     ;
@@ -438,22 +545,30 @@ class Device extends eventemitter3__WEBPACK_IMPORTED_MODULE_0__["default"] {
         this.socket.send(string);
     }
     ;
+    /**
+     * End the connection.
+     *
+     * @param code The closing code to send.
+     */
+    close(code = _codes__WEBPACK_IMPORTED_MODULE_2__.Close.NormalClosure, reason) {
+        this.socket.close(code, reason);
+    }
+    ;
     async *receiver() {
         const queue = [];
         let next = {
             resolve: null,
             reject: null,
         };
-        let disconnectInfo = null;
+        let closeInfo = null;
         this.on('packet', (packet) => {
             queue.push(packet);
             next.resolve?.();
             next.resolve = null;
         });
-        this.once('disconnect', (code, reason) => {
-            console.log(`Disconnected from server!`);
-            next.resolve?.(); // Wake up the loop to handle the disconnect.
-            disconnectInfo = {
+        this.once('close', (code, reason) => {
+            next.resolve?.(); // Wake up the loop to handle the closure.
+            closeInfo = {
                 code: code,
                 reason: reason,
             };
@@ -466,7 +581,7 @@ class Device extends eventemitter3__WEBPACK_IMPORTED_MODULE_0__["default"] {
             ;
             // Ensure that we don't `await` the promise, which will be unsettled.
             if (this.socket.readyState === _codes__WEBPACK_IMPORTED_MODULE_2__.ConnectionState.Closed) {
-                return disconnectInfo;
+                return closeInfo;
                 // Subsequent calls of `next` should give errors.
             }
             ;
@@ -499,6 +614,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   parse: () => (/* binding */ parse),
 /* harmony export */   stringify: () => (/* binding */ stringify)
 /* harmony export */ });
+// import Z from 'zod';
+/**
+ * Converts {@link Serializable} → {@link string}.
+ *
+ * @param data The data to stringify.
+ * @returns {string | null} The stringified data.
+ */
 function stringify(data) {
     try {
         return JSON.stringify(data);
@@ -510,6 +632,12 @@ function stringify(data) {
 
 }
 ;
+/**
+ * Converts {@link string} → {@link Serializable | null}.
+ *
+ * @param string The string to parse.
+ * @returns {Serializable | null} The parsed data.
+ */
 function parse(string) {
     try {
         return JSON.parse(string);
@@ -517,6 +645,45 @@ function parse(string) {
     catch {
         return null;
     }
+    // removed by dead control flow
+
+}
+;
+
+
+/***/ },
+
+/***/ "./dist/src/router.js"
+/*!****************************!*\
+  !*** ./dist/src/router.js ***!
+  \****************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Router: () => (/* binding */ Router)
+/* harmony export */ });
+class Router {
+    server;
+    routes = new Map();
+    constructor(server) {
+        this.server = server;
+        this.server.on('upgrade', (request, socket, head) => {
+            const { pathname: path, } = new URL(`http://${request.headers.host}${request.url}`);
+            if (this.routes.keys().toArray().includes(path)) {
+                this.routes.get(path)?.handle(request, socket, head);
+            }
+            else {
+                console.log(this.routes.keys());
+            }
+            ;
+        });
+    }
+    ;
+    push(blower) {
+        this.routes.set(blower.path, blower);
+    }
+    ;
 }
 ;
 
@@ -536,6 +703,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _assets_identifier_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! #assets/identifier.json */ "./assets/identifier.json");
 /* harmony import */ var _device__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! #~/device */ "./dist/src/device.js");
+/* harmony import */ var _reader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! #~/reader */ "./dist/src/reader.js");
+
 
 
 class Wind extends _device__WEBPACK_IMPORTED_MODULE_1__.Device {
@@ -545,13 +714,6 @@ class Wind extends _device__WEBPACK_IMPORTED_MODULE_1__.Device {
         this.__WebSocket__ = globalThis.WebSocket;
     }
     ;
-    // Is there a `Self` type in *Typescript*?
-    /**
-     * Connects to a {@link Blower} instance.
-     *
-     * @param location The location of the *WebSocket*.
-     *
-     */
     static async connect(config) {
         const socket = new this.__WebSocket__(config.location);
         return new Promise((resolve, reject) => {
@@ -560,34 +722,33 @@ class Wind extends _device__WEBPACK_IMPORTED_MODULE_1__.Device {
                 let response = await (new Promise((resolve, reject) => {
                     function listener(event) {
                         socket.removeEventListener('message', listener);
-                        console.log(event.data);
-                        resolve(event.data);
+                        resolve(_reader__WEBPACK_IMPORTED_MODULE_2__.parse(event.data));
                     }
                     ;
                     socket.addEventListener('message', listener);
-                    if (config.timeout !== undefined) {
+                    /*if (config.timeout !== undefined) {
                         setTimeout(reject, config.timeout);
-                    }
-                    ;
+                    };*/
                 }));
                 if (response !== _assets_identifier_json__WEBPACK_IMPORTED_MODULE_0__.greeting) {
                     reject("The server did not return the correct identifier.");
                 }
                 ;
-                socket.send(`"${_assets_identifier_json__WEBPACK_IMPORTED_MODULE_0__.greeting}"`);
-                /*response = await (new Promise<string>((resolve, reject) => {
-                    function listener(event: MessageEvent<string>) {
-                        socket.removeEventListener('message', listener);
-
-                        resolve(event.data);
-                    };
-
-                    socket.addEventListener('message', listener);
-
-                    if (config.timeout !== undefined) {
-                        setTimeout(reject, config.timeout);
-                    };
-                }));*/
+                /*if (config.doNotInquirePeerInfo !== true) {
+                    response = await (new Promise<string>((resolve, reject) => {
+                        function listener(event: MessageEvent<string>) {
+                            socket.removeEventListener('message', listener);
+    
+                            resolve(event.data);
+                        };
+    
+                        socket.addEventListener('message', listener);
+    
+                        if (config.timeout !== undefined) {
+                            setTimeout(reject, config.timeout);
+                        };
+                    }));
+                };*/
                 // The *WebSocket* is ready.
                 const wind = new Wind(socket);
                 // ...
@@ -603,7 +764,14 @@ class Wind extends _device__WEBPACK_IMPORTED_MODULE_1__.Device {
 ;
 (function (Wind) {
     class Creator {
+        /**
+         * Connects to a {@link Blower} instance.
+         *
+         * @param location The location of the *WebSocket*.
+         *
+         */
         static async connect() {
+            // Type declaration only.
             return null;
         }
         ;
@@ -724,10 +892,23 @@ var __webpack_exports__ = {};
   \***************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Blower: () => (/* reexport safe */ _blower__WEBPACK_IMPORTED_MODULE_1__.Blower),
+/* harmony export */   Codes: () => (/* reexport module object */ _codes__WEBPACK_IMPORTED_MODULE_3__),
+/* harmony export */   Reader: () => (/* reexport module object */ _reader__WEBPACK_IMPORTED_MODULE_4__),
+/* harmony export */   Router: () => (/* reexport safe */ _router__WEBPACK_IMPORTED_MODULE_2__.Router),
 /* harmony export */   Wind: () => (/* reexport safe */ _wind__WEBPACK_IMPORTED_MODULE_0__.Wind),
+/* harmony export */   blower: () => (/* reexport safe */ _blower__WEBPACK_IMPORTED_MODULE_1__.blower),
 /* harmony export */   wind: () => (/* reexport safe */ _wind__WEBPACK_IMPORTED_MODULE_0__.wind)
 /* harmony export */ });
 /* harmony import */ var _wind__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! #~/wind */ "./dist/src/wind.js");
+/* harmony import */ var _blower__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! #~/blower */ "./dist/src/blower.js");
+/* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! #~/router */ "./dist/src/router.js");
+/* harmony import */ var _codes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! #~/codes */ "./dist/src/codes.js");
+/* harmony import */ var _reader__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! #~/reader */ "./dist/src/reader.js");
+
+
+
+
 
 
 })();

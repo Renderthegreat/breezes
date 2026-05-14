@@ -1,4 +1,4 @@
-export enum Disconnect {
+export enum Close {
 	NormalClosure = 1000,
 	GoingAway = 1001,
 	ProtocolError = 1002,

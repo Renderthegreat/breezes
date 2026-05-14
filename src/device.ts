@@ -3,6 +3,8 @@ import EventEmitter from 'eventemitter3';
 import * as Reader from '#~/reader';
 import * as Codes from '#~/codes';
 
+// TODO: Add documentation.
+// TODO: Ping/Pong.
 export class Device extends EventEmitter<Device.Events> {
 	private queue: Reader.Serializable[] = [];
 
@@ -18,7 +20,7 @@ export class Device extends EventEmitter<Device.Events> {
 
 			if (data === null) {
 				// TODO: Make this configurable.
-				socket.close(Codes.Disconnect.InvalidPayloadData);
+				socket.close(Codes.Close.InvalidPayloadData);
 			
 				return;
 			};
@@ -28,7 +30,7 @@ export class Device extends EventEmitter<Device.Events> {
 		});
 
 		socket.addEventListener('close', (event) => {
-			this.emit('disconnect', event.code, event.reason);
+			this.emit('close', event.code, event.reason);
 		});
 	};
 
@@ -42,7 +44,16 @@ export class Device extends EventEmitter<Device.Events> {
 		this.socket.send(string);
 	};
 
-	public async * receiver(): AsyncGenerator<Reader.Serializable, Device.Disconnect, unknown> {
+	/**
+	 * End the connection.
+	 * 
+	 * @param code The closing code to send.
+	 */
+	public close(code: Codes.Close = Codes.Close.NormalClosure, reason?: string) {
+		this.socket.close(code, reason);
+	};
+
+	public async * receiver(): AsyncGenerator<Reader.Serializable, Device.Close, unknown> {
 		const queue: Reader.Serializable[] = [];
 
 		let next: { resolve: (() => void) | null, reject: ((error: Error) => void) | null, } = {
@@ -50,8 +61,7 @@ export class Device extends EventEmitter<Device.Events> {
 			reject: null,
 		};
 
-		let disconnectInfo: Device.Disconnect | null = null;
-
+		let closeInfo: Device.Close | null = null;
 
 		this.on('packet', (packet) => {
 			queue.push(packet);
@@ -60,12 +70,10 @@ export class Device extends EventEmitter<Device.Events> {
 			next.resolve = null;
 		});
 
-		this.once('disconnect', (code, reason) => {
-			console.log(`Disconnected from server!`);
+		this.once('close', (code, reason) => {
+			next.resolve?.(); // Wake up the loop to handle the closure.
 
-			next.resolve?.(); // Wake up the loop to handle the disconnect.
-
-			disconnectInfo = {
+			closeInfo = {
 				code: code,
 				reason: reason,
 			};
@@ -79,7 +87,7 @@ export class Device extends EventEmitter<Device.Events> {
 
 			// Ensure that we don't `await` the promise, which will be unsettled.
 			if (this.socket.readyState === Codes.ConnectionState.Closed) {
-				return disconnectInfo!;
+				return closeInfo!;
 				// Subsequent calls of `next` should give errors.
 			};
 
@@ -94,10 +102,10 @@ export class Device extends EventEmitter<Device.Events> {
 export namespace Device {
 	export interface Events {
 		packet: (packet: Reader.Serializable) => void;
-		disconnect: (code: number, reason: string) => void;
+		close: (code: number, reason: string) => void;
 	};
 
-	export type Disconnect = {
+	export type Close = {
 		code: number,
 		reason: string,
 	};

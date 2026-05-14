@@ -7,7 +7,7 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
 export default {
 	entry: {
 		main: './dist/src/index.js',
-		ping: './dist/tests/ping.js',
+		// ping: './dist/tests/ping.js',
 		// pong: './dist/tests/pong.js',
 
 	},

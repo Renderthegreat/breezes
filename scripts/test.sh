@@ -3,4 +3,4 @@ set -e;
 
 ./scripts/build.sh;
 
-npx ts-node ./tests/pong.ts;
+node ./dist/tests/app/server/index.js;

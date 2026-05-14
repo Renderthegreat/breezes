@@ -1,5 +1,6 @@
 import Identifier from '#assets/identifier.json' with { type: 'json' };
 import { Device, } from '#~/device';
+import * as Reader from '#~/reader';
 export class Wind extends Device {
     static __WebSocket__;
     // By default, use the *WebSocket* base.
@@ -7,13 +8,6 @@ export class Wind extends Device {
         this.__WebSocket__ = globalThis.WebSocket;
     }
     ;
-    // Is there a `Self` type in *Typescript*?
-    /**
-     * Connects to a {@link Blower} instance.
-     *
-     * @param location The location of the *WebSocket*.
-     *
-     */
     static async connect(config) {
         const socket = new this.__WebSocket__(config.location);
         return new Promise((resolve, reject) => {
@@ -22,34 +16,33 @@ export class Wind extends Device {
                 let response = await (new Promise((resolve, reject) => {
                     function listener(event) {
                         socket.removeEventListener('message', listener);
-                        console.log(event.data);
-                        resolve(event.data);
+                        resolve(Reader.parse(event.data));
                     }
                     ;
                     socket.addEventListener('message', listener);
-                    if (config.timeout !== undefined) {
+                    /*if (config.timeout !== undefined) {
                         setTimeout(reject, config.timeout);
-                    }
-                    ;
+                    };*/
                 }));
                 if (response !== Identifier.greeting) {
                     reject("The server did not return the correct identifier.");
                 }
                 ;
-                socket.send(`"${Identifier.greeting}"`);
-                /*response = await (new Promise<string>((resolve, reject) => {
-                    function listener(event: MessageEvent<string>) {
-                        socket.removeEventListener('message', listener);
-
-                        resolve(event.data);
-                    };
-
-                    socket.addEventListener('message', listener);
-
-                    if (config.timeout !== undefined) {
-                        setTimeout(reject, config.timeout);
-                    };
-                }));*/
+                /*if (config.doNotInquirePeerInfo !== true) {
+                    response = await (new Promise<string>((resolve, reject) => {
+                        function listener(event: MessageEvent<string>) {
+                            socket.removeEventListener('message', listener);
+    
+                            resolve(event.data);
+                        };
+    
+                        socket.addEventListener('message', listener);
+    
+                        if (config.timeout !== undefined) {
+                            setTimeout(reject, config.timeout);
+                        };
+                    }));
+                };*/
                 // The *WebSocket* is ready.
                 const wind = new Wind(socket);
                 // ...
@@ -65,7 +58,14 @@ export class Wind extends Device {
 ;
 (function (Wind) {
     class Creator {
+        /**
+         * Connects to a {@link Blower} instance.
+         *
+         * @param location The location of the *WebSocket*.
+         *
+         */
         static async connect() {
+            // Type declaration only.
             return null;
         }
         ;
